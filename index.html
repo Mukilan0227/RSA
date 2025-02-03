@@ -9,6 +9,7 @@
             display: flex;
             align-items: center;
             font-size: 1.5em;
+            margin-bottom: 10px;
         }
 
         .toggle-button {
@@ -42,32 +43,40 @@
     </style>
 </head>
 <body>
+    <h1>RS-AUTOMATION Relay Control</h1>
+    
     <div class="toggle-container">
-        <label for="toggle">
-            <div class="toggle-button" id="toggle">
+        <label for="relay12">
+            <div class="toggle-button" id="relay12">
                 <div class="toggle-slider"></div>
             </div>
         </label>
-        <span id="toggleState">0</span> <!-- Display 0 or 1 here -->
+        <span id="relay12State">0</span>
     </div>
 
     <script>
-        const toggleButton = document.getElementById("toggle");
-        const toggleState = document.getElementById("toggleState");
+        function setupToggleButton(buttonId, stateId, onUrl, offUrl) {
+            const toggleButton = document.getElementById(buttonId);
+            const toggleState = document.getElementById(stateId);
 
-        const esp32Ip = "http://192.168.29.45/12/off";  // Replace with your ESP32 IP address
+            toggleButton.addEventListener("click", function () {
+                let currentState = toggleState.textContent === "0" ? "1" : "0";
+                toggleState.textContent = currentState;
 
-        toggleButton.addEventListener("click", function () {
-            let currentState = toggleState.textContent === "0" ? "1" : "0";
-            toggleState.textContent = currentState;
+                toggleButton.classList.toggle("on", currentState === "1");
 
-            toggleButton.classList.toggle("on", currentState === "1");
+                fetch(currentState === "1" ? onUrl : offUrl)
+                    .then(response => response.text())
+                    .then(data => console.log("ESP32 Response:", data))
+                    .catch(error => console.error('Error:', error));
+            });
+        }
 
-            fetch(`${esp32Ip}/toggle?state=${currentState}`)
-                .then(response => response.text())
-                .then(data => console.log("ESP32 Response:", data))
-                .catch(error => console.error('Error:', error));
-        });
+        // Replace with your ESP32 IP
+        const esp32Ip = "http://192.168.29.45";
+        
+        // Setup relay toggle
+        setupToggleButton("relay12", "relay12State", `${esp32Ip}/12/on`, `${esp32Ip}/12/off`);
     </script>
 </body>
 </html>
