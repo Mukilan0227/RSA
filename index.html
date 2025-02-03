@@ -8,7 +8,7 @@
         .toggle-container {
             display: flex;
             align-items: center;
-            font-size: 1.5em;
+            font-size: 1.2em;
             margin-bottom: 10px;
         }
 
@@ -40,13 +40,18 @@
         .toggle-button.on .toggle-slider {
             transform: translateX(25px);
         }
+
+        .label {
+            width: 100px;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
     <h2>RS-AUTOMATION RELAY CONTROL</h2>
 
     <div class="toggle-container">
-        <label>Light</label>
+        <span class="label">Light</span>
         <div class="toggle-button" id="toggle-12">
             <div class="toggle-slider"></div>
         </div>
@@ -54,7 +59,7 @@
     </div>
 
     <div class="toggle-container">
-        <label>Fan</label>
+        <span class="label">Fan</span>
         <div class="toggle-button" id="toggle-27">
             <div class="toggle-slider"></div>
         </div>
@@ -62,7 +67,7 @@
     </div>
 
     <div class="toggle-container">
-        <label>Motor</label>
+        <span class="label">Motor</span>
         <div class="toggle-button" id="toggle-13">
             <div class="toggle-slider"></div>
         </div>
@@ -70,7 +75,7 @@
     </div>
 
     <div class="toggle-container">
-        <label>TV</label>
+        <span class="label">TV</span>
         <div class="toggle-button" id="toggle-14">
             <div class="toggle-slider"></div>
         </div>
