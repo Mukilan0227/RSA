@@ -1,60 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESP32 LED Control</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f9;
-    }
-    h1 {
-      color: #333;
-      margin-top: 20px;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 18px;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    .on-btn {
-      background-color: #28a745;
-    }
-    .off-btn {
-      background-color: #dc3545;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toggle Button</title>
+    <style>
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            font-size: 1.5em;
+        }
+
+        .toggle-button {
+            width: 50px;
+            height: 25px;
+            border-radius: 50px;
+            background-color: #ccc;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-button input {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .toggle-slider {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: white;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-button.on {
+            background-color: #4CAF50;
+        }
+
+        .toggle-button.on .toggle-slider {
+            transform: translateX(25px);
+        }
+    </style>
 </head>
 <body>
-  <h1>Control Your LED</h1>
-  <button class="on-btn" onclick="controlLED('ON')">Turn ON</button>
-  <button class="off-btn" onclick="controlLED('OFF')">Turn OFF</button>
+    <div class="toggle-container">
+        <label for="toggle">
+            <div class="toggle-button" id="toggle">
+                <div class="toggle-slider"></div>
+                <input type="checkbox" id="toggleInput">
+            </div>
+        </label>
+        <span id="toggleState">0</span> <!-- Display 0 or 1 here -->
+    </div>
 
-  <script>
-    // Replace this URL with your ngrok or public ESP32 URL
-    const apiUrl = "http://xyz123.ngrok.io";
-    function controlLED(state) {
-      fetch(`${apiUrl}/LED=${state}`)
-        .then(response => {
-          if (response.ok) {
-            alert(`LED turned ${state}`);
-          } else {
-            alert("Failed to control LED. Check your connection.");
-          }
-        })
-        .catch(error => {
-          console.error("Error:", error);
-          alert("Failed to connect to ESP32.");
+    <script>
+        // Get references to the elements
+        const toggleButton = document.getElementById("toggle");
+        const toggleInput = document.getElementById("toggleInput");
+        const toggleState = document.getElementById("toggleState");
+
+        // Replace this with your ESP32 IP address
+        const esp32Ip = "http://192.168.x.x";  // Replace with your ESP32 IP address
+
+        // Add an event listener to handle the toggle button click
+        toggleButton.addEventListener("click", function() {
+            // Check the toggle state (1 for on, 0 for off)
+            const toggleValue = toggleInput.checked ? 1 : 0;
+
+            // Update the displayed state (0 or 1)
+            toggleState.textContent = toggleValue;
+
+            // Send a request to the Arduino server (ESP32)
+            fetch(esp32Ip + '/toggle?state=' + toggleValue)
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);  // Log the server response
+                })
+                .catch(error => {
+                    console.error('Error:', error);  // Log any errors
+                });
         });
-    }
-  </script>
+    </script>
 </body>
 </html>
