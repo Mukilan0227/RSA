@@ -43,40 +43,66 @@
     </style>
 </head>
 <body>
-    <h1>RS-AUTOMATION Relay Control</h1>
-    
+    <h2>RS-AUTOMATION RELAY CONTROL</h2>
+
     <div class="toggle-container">
-        <label for="relay12">
-            <div class="toggle-button" id="relay12">
-                <div class="toggle-slider"></div>
-            </div>
-        </label>
-        <span id="relay12State">0</span>
+        <label>Light</label>
+        <div class="toggle-button" id="toggle-12">
+            <div class="toggle-slider"></div>
+        </div>
+        <span id="toggleState-12">OFF</span>
+    </div>
+
+    <div class="toggle-container">
+        <label>Fan</label>
+        <div class="toggle-button" id="toggle-27">
+            <div class="toggle-slider"></div>
+        </div>
+        <span id="toggleState-27">OFF</span>
+    </div>
+
+    <div class="toggle-container">
+        <label>Motor</label>
+        <div class="toggle-button" id="toggle-13">
+            <div class="toggle-slider"></div>
+        </div>
+        <span id="toggleState-13">OFF</span>
+    </div>
+
+    <div class="toggle-container">
+        <label>TV</label>
+        <div class="toggle-button" id="toggle-14">
+            <div class="toggle-slider"></div>
+        </div>
+        <span id="toggleState-14">OFF</span>
     </div>
 
     <script>
-        function setupToggleButton(buttonId, stateId, onUrl, offUrl) {
-            const toggleButton = document.getElementById(buttonId);
-            const toggleState = document.getElementById(stateId);
+        const esp32Ip = "http://192.168.29.45"; // ESP32 IP Address
+
+        function setupToggle(gpio) {
+            const toggleButton = document.getElementById(`toggle-${gpio}`);
+            const toggleState = document.getElementById(`toggleState-${gpio}`);
 
             toggleButton.addEventListener("click", function () {
-                let currentState = toggleState.textContent === "0" ? "1" : "0";
-                toggleState.textContent = currentState;
+                let currentState = toggleState.textContent === "OFF" ? "on" : "off";
 
-                toggleButton.classList.toggle("on", currentState === "1");
-
-                fetch(currentState === "1" ? onUrl : offUrl)
+                fetch(`${esp32Ip}/${gpio}/${currentState}`)
                     .then(response => response.text())
-                    .then(data => console.log("ESP32 Response:", data))
-                    .catch(error => console.error('Error:', error));
+                    .then(data => {
+                        console.log(`ESP32 Response for GPIO ${gpio}:`, data);
+                        toggleState.textContent = currentState.toUpperCase();
+                        toggleButton.classList.toggle("on", currentState === "on");
+                    })
+                    .catch(error => console.error(`Error controlling GPIO ${gpio}:`, error));
             });
         }
 
-        // Replace with your ESP32 IP
-        const esp32Ip = "http://192.168.29.45";
-        
-        // Setup relay toggle
-        setupToggleButton("relay12", "relay12State", `${esp32Ip}/12/on`, `${esp32Ip}/12/off`);
+        // Setup toggle buttons for each GPIO
+        setupToggle(12);
+        setupToggle(27);
+        setupToggle(13);
+        setupToggle(14);
     </script>
 </body>
 </html>
