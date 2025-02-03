@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RS-AOTUMATION</title>
+    <title>RS-AUTOMATION</title>
     <style>
         .toggle-container {
             display: flex;
@@ -19,14 +19,6 @@
             position: relative;
             cursor: pointer;
             transition: background-color 0.3s;
-        }
-
-        .toggle-button input {
-            opacity: 0;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
         }
 
         .toggle-slider {
@@ -54,38 +46,27 @@
         <label for="toggle">
             <div class="toggle-button" id="toggle">
                 <div class="toggle-slider"></div>
-                <input type="checkbox" id="toggleInput">
             </div>
         </label>
         <span id="toggleState">0</span> <!-- Display 0 or 1 here -->
     </div>
 
     <script>
-        // Get references to the elements
         const toggleButton = document.getElementById("toggle");
-        const toggleInput = document.getElementById("toggleInput");
         const toggleState = document.getElementById("toggleState");
 
-        // Replace this with your ESP32 IP address
-        const esp32Ip = "http://192.168.x.x";  // Replace with your ESP32 IP address
+        const esp32Ip = "http://192.168.29.45";  // Replace with your ESP32 IP address
 
-        // Add an event listener to handle the toggle button click
-        toggleButton.addEventListener("click", function() {
-            // Check the toggle state (1 for on, 0 for off)
-            const toggleValue = toggleInput.checked ? 1 : 0;
+        toggleButton.addEventListener("click", function () {
+            let currentState = toggleState.textContent === "0" ? "1" : "0";
+            toggleState.textContent = currentState;
 
-            // Update the displayed state (0 or 1)
-            toggleState.textContent = toggleValue;
+            toggleButton.classList.toggle("on", currentState === "1");
 
-            // Send a request to the Arduino server (ESP32)
-            fetch(esp32Ip + '/toggle?state=' + toggleValue)
+            fetch(`${esp32Ip}/toggle?state=${currentState}`)
                 .then(response => response.text())
-                .then(data => {
-                    console.log(data);  // Log the server response
-                })
-                .catch(error => {
-                    console.error('Error:', error);  // Log any errors
-                });
+                .then(data => console.log("ESP32 Response:", data))
+                .catch(error => console.error('Error:', error));
         });
     </script>
 </body>
