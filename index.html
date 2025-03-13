@@ -3,111 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RS-AUTOMATION</title>
-    <style>
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-
-        .toggle-button {
-            width: 50px;
-            height: 25px;
-            border-radius: 50px;
-            background-color: #ccc;
-            position: relative;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .toggle-slider {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background-color: white;
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            transition: transform 0.3s;
-        }
-
-        .toggle-button.on {
-            background-color: #4CAF50;
-        }
-
-        .toggle-button.on .toggle-slider {
-            transform: translateX(25px);
-        }
-
-        .label {
-            width: 100px;
-            display: inline-block;
-        }
-    </style>
+    <title>ESP8266 LED Control</title>
 </head>
 <body>
-    <h2>RS-AUTOMATION RELAY CONTROL</h2>
-
-    <div class="toggle-container">
-        <span class="label">Light</span>
-        <div class="toggle-button" id="toggle-12">
-            <div class="toggle-slider"></div>
-        </div>
-        <span id="toggleState-12">OFF</span>
-    </div>
-
-    <div class="toggle-container">
-        <span class="label">Fan</span>
-        <div class="toggle-button" id="toggle-27">
-            <div class="toggle-slider"></div>
-        </div>
-        <span id="toggleState-27">OFF</span>
-    </div>
-
-    <div class="toggle-container">
-        <span class="label">Motor</span>
-        <div class="toggle-button" id="toggle-13">
-            <div class="toggle-slider"></div>
-        </div>
-        <span id="toggleState-13">OFF</span>
-    </div>
-
-    <div class="toggle-container">
-        <span class="label">TV</span>
-        <div class="toggle-button" id="toggle-14">
-            <div class="toggle-slider"></div>
-        </div>
-        <span id="toggleState-14">OFF</span>
-    </div>
+    <h1>LED Control</h1>
+    <button onclick="controlLED('on')">Turn ON</button>
+    <button onclick="controlLED('off')">Turn OFF</button>
 
     <script>
-        const esp32Ip = "http://192.168.29.45"; // ESP32 IP Address
+        const ESP_IP = "http://192.168.43.52"; // Update this with ESP8266 IP
 
-        function setupToggle(gpio) {
-            const toggleButton = document.getElementById(`toggle-${gpio}`);
-            const toggleState = document.getElementById(`toggleState-${gpio}`);
-
-            toggleButton.addEventListener("click", function () {
-                let currentState = toggleState.textContent === "OFF" ? "on" : "off";
-
-                fetch(`${esp32Ip}/${gpio}/${currentState}`)
-                    .then(response => response.text())
-                    .then(data => {
-                        console.log(`ESP32 Response for GPIO ${gpio}:`, data);
-                        toggleState.textContent = currentState.toUpperCase();
-                        toggleButton.classList.toggle("on", currentState === "on");
-                    })
-                    .catch(error => console.error(`Error controlling GPIO ${gpio}:`, error));
-            });
+        function controlLED(state) {
+            fetch(`${ESP_IP}/${state}`)
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
         }
-
-        // Setup toggle buttons for each GPIO
-        setupToggle(12);
-        setupToggle(27);
-        setupToggle(13);
-        setupToggle(14);
     </script>
 </body>
 </html>
