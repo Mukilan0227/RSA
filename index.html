@@ -7,26 +7,42 @@
 </head>
 <body>
     <h1>ESP8266 LED Control</h1>
-    <button onclick="controlLED('on')">Turn LED ON</button>
-    <button onclick="controlLED('off')">Turn LED OFF</button>
+    <button id="on">Turn LED ON</button>
+    <button id="off">Turn LED OFF</button>
+    <p id="status">Status: Waiting for action...</p>
 
     <script>
-        const esp8266_ip = " https://5175-210-212-250-42.ngrok-free.app";
+        const esp8266_ip = "https://5175-210-212-250-42.ngrok-free.app"; // Update with your ngrok link
 
-        function controlLED(state) {
-            fetch(`${esp8266_ip}/led/${state}`)
+        document.getElementById("on").addEventListener("click", function() {
+            fetch(esp8266_ip + "/led/on")
                 .then(response => {
                     if (response.ok) {
-                        alert(`LED turned ${state.toUpperCase()}`);
+                        document.getElementById("status").innerText = "Status: LED is ON";
                     } else {
-                        alert("Failed to control LED");
+                        document.getElementById("status").innerText = "Status: Failed to turn LED ON";
                     }
                 })
                 .catch(error => {
                     console.error("Error:", error);
-                    alert("Error communicating with ESP8266");
+                    document.getElementById("status").innerText = "Status: Error communicating with ESP8266";
                 });
-        }
+        });
+
+        document.getElementById("off").addEventListener("click", function() {
+            fetch(esp8266_ip + "/led/off")
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById("status").innerText = "Status: LED is OFF";
+                    } else {
+                        document.getElementById("status").innerText = "Status: Failed to turn LED OFF";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    document.getElementById("status").innerText = "Status: Error communicating with ESP8266";
+                });
+        });
     </script>
 </body>
 </html>
