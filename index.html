@@ -6,20 +6,25 @@
     <title>ESP8266 LED Control</title>
 </head>
 <body>
-    <h1>LED Control</h1>
+    <h1>ESP8266 LED Control</h1>
     <button onclick="controlLED('on')">Turn ON</button>
     <button onclick="controlLED('off')">Turn OFF</button>
+    <p id="status">Status: Waiting for action...</p>
 
     <script>
-        const ESP_IP = "http://192.168.43.52";
+        const ESP_IP = "http://192.168.43.52"; // Your ESP8266 IP
 
-function controlLED(state) {
-    fetch(`${ESP_IP}/${state}`)
-        .then(response => response.text())
-        .then(data => console.log(data))
-        .catch(error => console.error('Error:', error));
-}
-
+        async function controlLED(state) {
+            try {
+                const response = await fetch(`${ESP_IP}/${state}`);
+                const result = await response.text();
+                document.getElementById('status').textContent = `Status: LED is ${state.toUpperCase()}`;
+                console.log(result);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('status').textContent = "Failed to connect to ESP8266.";
+            }
+        }
     </script>
 </body>
 </html>
