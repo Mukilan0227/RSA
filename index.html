@@ -6,43 +6,16 @@
     <title>ESP8266 LED Control</title>
 </head>
 <body>
-    <h1>ESP8266 LED Control</h1>
-    <button id="on">Turn LED ON</button>
-    <button id="off">Turn LED OFF</button>
-    <p id="status">Status: Waiting for action...</p>
+    <h1>LED Control</h1>
+    <button onclick="controlLED('1')">Turn ON LED</button>
+    <button onclick="controlLED('0')">Turn OFF LED</button>
 
     <script>
-        const esp8266_ip = "https://5175-210-212-250-42.ngrok-free.app"; // Update with your ngrok link
-
-        document.getElementById("on").addEventListener("click", function() {
-            fetch(esp8266_ip + "/led/on")
-                .then(response => {
-                    if (response.ok) {
-                        document.getElementById("status").innerText = "Status: LED is ON";
-                    } else {
-                        document.getElementById("status").innerText = "Status: Failed to turn LED ON";
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    document.getElementById("status").innerText = "Status: Error communicating with ESP8266";
-                });
-        });
-
-        document.getElementById("off").addEventListener("click", function() {
-            fetch(esp8266_ip + "/led/off")
-                .then(response => {
-                    if (response.ok) {
-                        document.getElementById("status").innerText = "Status: LED is OFF";
-                    } else {
-                        document.getElementById("status").innerText = "Status: Failed to turn LED OFF";
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    document.getElementById("status").innerText = "Status: Error communicating with ESP8266";
-                });
-        });
+        function controlLED(state) {
+            fetch('data1.html', { method: 'POST', body: state })
+                .then(response => console.log('LED state:', state))
+                .catch(error => console.error('Error:', error));
+        }
     </script>
 </body>
 </html>
