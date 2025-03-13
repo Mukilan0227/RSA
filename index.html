@@ -11,7 +11,7 @@
     <button onclick="controlLED('off')">Turn LED OFF</button>
 
     <script>
-        const esp8266_ip = "http://192.168.43.52"; // Replace with your ESP8266 IP
+        const esp8266_ip = "http://172.16.161.243/"; // Replace with your ESP8266 IP
 
         function controlLED(state) {
             fetch(`${esp8266_ip}/led/${state}`)
