@@ -11,14 +11,15 @@
     <button onclick="controlLED('off')">Turn OFF</button>
 
     <script>
-        const ESP_IP = "http://192.168.43.52"; // Update this with ESP8266 IP
+        const ESP_IP = "http://192.168.43.52";
 
-        function controlLED(state) {
-            fetch(`${ESP_IP}/${state}`)
-                .then(response => response.text())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error:', error));
-        }
+function controlLED(state) {
+    fetch(`${ESP_IP}/${state}`)
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+}
+
     </script>
 </body>
 </html>
