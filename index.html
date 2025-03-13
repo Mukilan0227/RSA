@@ -11,7 +11,7 @@
     <button onclick="controlLED('off')">Turn LED OFF</button>
 
     <script>
-        const esp8266_ip = "http://172.16.161.243";
+        const esp8266_ip = " https://5175-210-212-250-42.ngrok-free.app";
 
         function controlLED(state) {
             fetch(`${esp8266_ip}/led/${state}`)
