@@ -1,55 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>ESP32 LED Control</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
-      background-color: #f2f2f2;
-    }
-    h1 {
-      color: #333;
-    }
+    body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+    h1 { font-size: 2em; margin-bottom: 20px; }
     button {
-      font-size: 22px;
+      font-size: 20px;
       padding: 15px 40px;
-      margin: 15px;
+      margin: 10px;
+      background: #4CAF50;
+      color: white;
       border: none;
       border-radius: 10px;
-      background-color: #007bff;
-      color: white;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #0056b3;
+    button.off {
+      background: #f44336;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <h1>ESP32 LED Controller</h1>
-  <button onclick="sendCommand('on')">LED ON</button>
-  <button onclick="sendCommand('off')">LED OFF</button>
+  <h1>ESP32 LED Control</h1>
+  <button onclick="toggleLED('on')">Turn ON</button>
+  <button class="off" onclick="toggleLED('off')">Turn OFF</button>
+  <p id="status">Status: Idle</p>
 
   <script>
-    const ESP_IP = "192.168.43.129"; // Replace with your actual ESP32 IP
+    // Replace with your actual ngrok HTTPS URL
+    const ESP32_IP = "https://2916-2409-408d-71d-648e-8ca7-cc48-2560-7539.ngrok-free.app";
 
-    async function sendCommand(action) {
-      try {
-        const response = await fetch(`${ESP_IP}/led/${action}`, {
-          method: 'GET',
-          mode: 'cors'
+    function toggleLED(state) {
+      fetch(`${ESP32_IP}/led?state=${state}`)
+        .then(res => res.text())
+        .then(text => {
+          document.getElementById("status").innerText = "ESP32: " + text;
+        })
+        .catch(err => {
+          document.getElementById("status").innerText = "ESP32: Error!";
+          console.error(err);
         });
-
-        if (!response.ok) throw new Error("HTTP Error " + response.status);
-        const result = await response.text();
-        alert("✅ " + result);
-      } catch (error) {
-        console.error("Error:", error);
-        alert("❌ Could not reach ESP32. Check WiFi & IP.");
-      }
     }
   </script>
 </body>
