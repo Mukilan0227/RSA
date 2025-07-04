@@ -2,28 +2,54 @@
 <html>
 <head>
   <title>ESP32 LED Control</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body { text-align: center; font-family: sans-serif; margin-top: 50px; }
-    button {
-      font-size: 20px; padding: 15px 30px; margin: 10px;
-      background: #007bff; color: white; border: none; border-radius: 8px;
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-color: #f2f2f2;
     }
-    button:hover { background: #0056b3; }
+    h1 {
+      color: #333;
+    }
+    button {
+      font-size: 22px;
+      padding: 15px 40px;
+      margin: 15px;
+      border: none;
+      border-radius: 10px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
-  <h1>LED Control via GitHub</h1>
-  <button onclick="sendCommand('on')">Turn LED ON</button>
-  <button onclick="sendCommand('off')">Turn LED OFF</button>
+  <h1>ESP32 LED Controller</h1>
+  <button onclick="sendCommand('on')">LED ON</button>
+  <button onclick="sendCommand('off')">LED OFF</button>
 
   <script>
-    const ESP_IP = "http://192.168.43.129"; // 👈 replace with your ESP32-C6 IP
+    const ESP_IP = "http://192.168.43.129"; // Replace with your actual ESP32 IP
 
-    function sendCommand(action) {
-      fetch(`${ESP_IP}/led/${action}`)
-        .then(res => res.text())
-        .then(data => alert(data))
-        .catch(err => alert("ESP32 not reachable"));
+    async function sendCommand(action) {
+      try {
+        const response = await fetch(`${ESP_IP}/led/${action}`, {
+          method: 'GET',
+          mode: 'cors'
+        });
+
+        if (!response.ok) throw new Error("HTTP Error " + response.status);
+        const result = await response.text();
+        alert("✅ " + result);
+      } catch (error) {
+        console.error("Error:", error);
+        alert("❌ Could not reach ESP32. Check WiFi & IP.");
+      }
     }
   </script>
 </body>
