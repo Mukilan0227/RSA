@@ -1,52 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32 LED Control</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-        }
-        button {
-            font-size: 20px;
-            padding: 15px 30px;
-            margin: 10px;
-            cursor: pointer;
-        }
-        #status {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-    </style>
+  <title>ESP32 LED Control</title>
+  <style>
+    body { text-align: center; font-family: sans-serif; margin-top: 50px; }
+    button {
+      font-size: 20px; padding: 15px 30px; margin: 10px;
+      background: #007bff; color: white; border: none; border-radius: 8px;
+    }
+    button:hover { background: #0056b3; }
+  </style>
 </head>
 <body>
-    <h1>ESP32 LED Control Panel</h1>
-    <p id="status">LED Status: <span id="ledStatus">OFF</span></p>
-    <button onclick="controlLED('1')">Turn LED ON</button>
-    <button onclick="controlLED('0')">Turn LED OFF</button>
+  <h1>LED Control via GitHub</h1>
+  <button onclick="sendCommand('on')">Turn LED ON</button>
+  <button onclick="sendCommand('off')">Turn LED OFF</button>
 
-    <script>
-        function controlLED(state) {
-            fetch('https://raw.githubusercontent.com/mukilan0227/RSA/main/led_status.txt', {
-                method: 'PUT',
-                body: state,
-                headers: {
-                    'Content-Type': 'text/plain'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    document.getElementById('ledStatus').innerText = state === '1' ? 'ON' : 'OFF';
-                    alert('LED status updated!');
-                } else {
-                    alert('Failed to update LED status.');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
+  <script>
+    const ESP_IP = "http://192.168.43.129"; // 👈 replace with your ESP32-C6 IP
+
+    function sendCommand(action) {
+      fetch(`${ESP_IP}/led/${action}`)
+        .then(res => res.text())
+        .then(data => alert(data))
+        .catch(err => alert("ESP32 not reachable"));
+    }
+  </script>
 </body>
 </html>
