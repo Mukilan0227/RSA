@@ -7,34 +7,53 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      padding-top: 60px;
+      padding-top: 50px;
       background-color: #f0f0f0;
     }
+    h1 {
+      margin-bottom: 30px;
+    }
     button {
-      font-size: 1.2rem;
+      font-size: 18px;
+      padding: 12px 30px;
       margin: 10px;
-      padding: 15px 30px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
     }
-    .on { background-color: green; color: white; }
-    .off { background-color: red; color: white; }
-    #status { margin-top: 20px; font-size: 1.1rem; }
+    .on {
+      background-color: green;
+      color: white;
+    }
+    .off {
+      background-color: red;
+      color: white;
+    }
+    #status {
+      font-size: 18px;
+      margin-top: 20px;
+      color: #333;
+    }
   </style>
 </head>
 <body>
-  <h1>Control ESP32 LED</h1>
+  <h1>ESP32 LED Control</h1>
   <button class="on" onclick="toggleLED('on')">Turn ON</button>
   <button class="off" onclick="toggleLED('off')">Turn OFF</button>
   <p id="status">Status: Waiting...</p>
 
   <script>
-    const ESP32_IP = "https://63f0-121-242-232-133.ngrok-free.app"; // your current tunnel URL
+    // Replace with your ngrok HTTPS URL
+    const ESP32_IP = "https://63f0-121-242-232-133.ngrok-free.app";
 
     function toggleLED(state) {
       fetch(`${ESP32_IP}/led?state=${state}`)
-        .then(res => res.text())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("ESP32 did not respond properly");
+          }
+          return response.text();
+        })
         .then(data => {
           document.getElementById("status").innerText = "ESP32: " + data;
           console.log("Response:", data);
